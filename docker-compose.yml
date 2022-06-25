@@ -1,0 +1,72 @@
+
+version: "3.1"
+
+services:
+  mariadb:
+    image: mariadb:10.8
+    container_name: mariadbb
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - MARIADB_RANDOM_ROOT_PASSWORD=$MARIADB_RANDOM_ROOT_PASSWORD
+      - MARIADB_DATABASE=$MARIADB_WORDPRESS_DATABASE
+      - MARIADB_USER=$MARIADB_WORDPRESS_USER
+      - MARIADB_PASSWORD=$MARIADB_WORDPRESS_PASSWORD
+    volumes:
+      - mariadb:/var/lib/mysql
+    networks:
+      - wordpress_maria_nginx_network
+
+  wordpress:
+    depends_on:
+      - mariadb
+    image: wordpress:6.0-fpm-alpine
+    container_name: wordpresss
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - WORDPRESS_DB_HOST=mariadb:3306
+      - WORDPRESS_DB_NAME=$MARIADB_WORDPRESS_DATABASE
+      - WORDPRESS_DB_USER=$MARIADB_WORDPRESS_USER
+      - WORDPRESS_DB_PASSWORD=$MARIADB_WORDPRESS_PASSWORD
+    volumes:
+      - ./php-conf/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+      - wordpress:/var/www/html
+    networks:
+      - wordpress_maria_nginx_network
+
+  nginx:
+    depends_on:
+      - wordpress
+    image: nginx:1.23.0-alpine
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx-conf:/etc/nginx/conf.d
+      - certbot:/etc/letsencrypt
+      - wordpress:/var/www/html
+    networks:
+      - wordpress_maria_nginx_network
+    command: "/bin/sh -c 'while :; do sleep 24h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+
+  certbot:
+    depends_on:
+      - nginx
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - certbot:/etc/letsencrypt
+      - wordpress:/var/www/html
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+volumes:
+  mariadb:
+  wordpress:
+  certbot:
+
+networks:
+  wordpress_maria_nginx_network:
+    driver: bridge
