@@ -9,9 +9,9 @@ services:
     #env_file: .env
     environment:
       - MARIADB_RANDOM_ROOT_PASSWORD=1  ##$MARIADB_RANDOM_ROOT_PASSWORD
-      - MARIADB_DATABASE=matritza  ##$MARIADB_WORDPRESS_DATABASE
-      - MARIADB_USER=matritzauser  ##$MARIADB_WORDPRESS_USER
-      - MARIADB_PASSWORD=matritzapasswd  ##$MARIADB_WORDPRESS_PASSWORD
+      - MARIADB_DATABASE=exampledb  ##$MARIADB_WORDPRESS_DATABASE
+      - MARIADB_USER=exampleuser  ##$MARIADB_WORDPRESS_USER
+      - MARIADB_PASSWORD=examplepass  ##$MARIADB_WORDPRESS_PASSWORD
     volumes:
       - mariadb:/var/lib/mysql
     networks:
@@ -26,9 +26,9 @@ services:
     #env_file: .env
     environment:
       - WORDPRESS_DB_HOST=mariadb:3306
-      - WORDPRESS_DB_NAME=matritza  ##$MARIADB_WORDPRESS_DATABASE
-      - WORDPRESS_DB_USER=matritzauser  ##$MARIADB_WORDPRESS_USER
-      - WORDPRESS_DB_PASSWORD=matritzapasswd  ##$MARIADB_WORDPRESS_PASSWORD
+      - WORDPRESS_DB_NAME=exampledb  ##$MARIADB_WORDPRESS_DATABASE
+      - WORDPRESS_DB_USER=exampleuser  ##$MARIADB_WORDPRESS_USER
+      - WORDPRESS_DB_PASSWORD=examplepass  ##$MARIADB_WORDPRESS_PASSWORD
     volumes:
       - ./php-conf/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
       - wordpress:/var/www/html
@@ -55,7 +55,7 @@ services:
   certbot:
     depends_on:
       - nginx
-    image: certbot/certbot
+    image: certbot/certbot:arm64v8-latest
     container_name: certbot
     volumes:
       - certbot:/etc/letsencrypt
