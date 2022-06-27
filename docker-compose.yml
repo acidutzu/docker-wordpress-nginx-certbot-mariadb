@@ -4,14 +4,14 @@ version: "3.1"
 services:
   mariadb:
     image: mariadb:10.8
-    container_name: mariadbb
+    container_name: mariadb
     restart: unless-stopped
-    env_file: .env
+    #env_file: .env
     environment:
-      - MARIADB_RANDOM_ROOT_PASSWORD=$MARIADB_RANDOM_ROOT_PASSWORD
-      - MARIADB_DATABASE=$MARIADB_WORDPRESS_DATABASE
-      - MARIADB_USER=$MARIADB_WORDPRESS_USER
-      - MARIADB_PASSWORD=$MARIADB_WORDPRESS_PASSWORD
+      - MARIADB_RANDOM_ROOT_PASSWORD=1  ##$MARIADB_RANDOM_ROOT_PASSWORD
+      - MARIADB_DATABASE=matritza  ##$MARIADB_WORDPRESS_DATABASE
+      - MARIADB_USER=matritzauser  ##$MARIADB_WORDPRESS_USER
+      - MARIADB_PASSWORD=matritzapasswd  ##$MARIADB_WORDPRESS_PASSWORD
     volumes:
       - mariadb:/var/lib/mysql
     networks:
@@ -21,14 +21,14 @@ services:
     depends_on:
       - mariadb
     image: wordpress:6.0-fpm-alpine
-    container_name: wordpresss
+    container_name: wordpress
     restart: unless-stopped
-    env_file: .env
+    #env_file: .env
     environment:
       - WORDPRESS_DB_HOST=mariadb:3306
-      - WORDPRESS_DB_NAME=$MARIADB_WORDPRESS_DATABASE
-      - WORDPRESS_DB_USER=$MARIADB_WORDPRESS_USER
-      - WORDPRESS_DB_PASSWORD=$MARIADB_WORDPRESS_PASSWORD
+      - WORDPRESS_DB_NAME=matritza  ##$MARIADB_WORDPRESS_DATABASE
+      - WORDPRESS_DB_USER=matritzauser  ##$MARIADB_WORDPRESS_USER
+      - WORDPRESS_DB_PASSWORD=matritzapasswd  ##$MARIADB_WORDPRESS_PASSWORD
     volumes:
       - ./php-conf/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
       - wordpress:/var/www/html
@@ -63,9 +63,9 @@ services:
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
 volumes:
-  mariadb:
-  wordpress:
-  certbot:
+  mariadb: {}
+  wordpress: {}
+  certbot: {}
 
 networks:
   wordpress_maria_nginx_network:
