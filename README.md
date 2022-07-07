@@ -40,7 +40,13 @@ i like this 3 commands to do that:
 make sure that ports 80 and 443 are opened (forwarded ) for the raspberry pi IP from the router otherwise the INSTALLATION Scenario 1 will not work, Let`s Encrypt needs to “see” those ports opened
 
 ## INSTALLATION
-
+- the runFirst-certbot-tls.sh script will use docker-compose to deploy 4 image containers: wordpress, nginx, certbot, mariadb
+-the certbot image from the docker-compose.yml file is for ARM64 architecture that raspberry pi 4 is, if you want it for x86 or amd64 then change the line from :
+```
+image: certbot/certbot:arm64v8-latest
+to
+image: certbot/certbot
+```
 commands:
 ```
 mkdir website
