@@ -51,15 +51,15 @@ sudo sh runFirst-certbot-tls.sh
 ```
 
 ## Scenario 1
-– you will be prompted to enter a domain name and an email, youll need to enter the domain name that you have chosen from the https://www.digi.ro/ or a domain name that you have registered from elsewhere, in my case when prompted I enter devop.go.ro without http or https or www - this prompt is an automatic way to get an Lets Encrypt https certification for your domain name
+- you will be prompted to enter a domain name and an email, youll need to enter the domain name that you have chosen from the https://www.digi.ro/ or a domain name that you have registered from elsewhere, in my case when prompted I enter devop.go.ro without http or https or www - this prompt is an automatic way to get an Lets Encrypt https certification for your domain name
 
-– the https DNS challange certificate is valid for 3 months but it will automaticaly renew itself, thanks to the command:
+- the https DNS challange certificate is valid for 3 months but it will automaticaly renew itself, thanks to the command:
 entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 from the docker-compose.yml file, sleep 12h can be changed to your needs.
 -----------------------------------------------------------------------------------------
 
 ## Scenario 2
-– if you do not want a Lets Encrypt certificate yet, but just wanna test the website, then comment the folowing lines from the file: runFirst-certbot-tls.sh | a self signed certificate will be issued, but if you choose this "Scenario" then when prompted to enter a domain name, enter the local IP of the raspberry pi for example: 192.168.1.234, in this way you`ll be able to access the website at https://192.168.1.234
+- if you do not want a Lets Encrypt certificate yet, but just wanna test the website, then comment the folowing lines from the file: runFirst-certbot-tls.sh | a self signed certificate will be issued, but if you choose this "Scenario" then when prompted to enter a domain name, enter the local IP of the raspberry pi for example: 192.168.1.234, in this way you`ll be able to access the website at https://192.168.1.234
 
 so then to edit runFirst-certbot-tls.sh run this command:
 ```
